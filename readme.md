@@ -29,3 +29,10 @@ In this project we have a simple GnuCOBOL “free format” console app designed
 ## Day 07
 Extends the UI with PostgreSQL integration. Auth and Register now validate against a real database using COBOL DB modules and `psql` execution.
 
+## Day 08
+Let´s improve the previous code from Day-07 by adding a JDBC driver rather than using `psql` command line. This allows us to execute SQL queries directly from COBOL without shelling out.
+
+Under construction... stay tuned for more updates!
+
+:)
+
