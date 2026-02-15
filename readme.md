@@ -4,6 +4,21 @@
 
 ---
 
+## Summary Session
+This repository documents a progressive COBOL learning path across 7 days, moving from setup and language basics to console interfaces, and database integration.
+
+So far, the journey includes:
+- Environment setup with Docker and Make
+- Core COBOL syntax and program structure
+- Modular design with copybooks and reusable routines
+- Input validation and user flow control
+- Transition to free-format COBOL and `SCREEN SECTION`
+- File management features in console applications
+- PostgreSQL authentication/registration workflows
+- Evolution from shell-based SQL calls to JDBC integration (coming soon)
+
+Together, these steps form a practical foundation for building real COBOL applications, from simple terminal programs to database-connected systems.
+
 ## Day 01
 Intro to COBOL tooling and setup with Docker + Make. Creates the base folder structure and walks through COBOL fundamentals: constants, variables, loops, and functions.
 
