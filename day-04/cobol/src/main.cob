@@ -1,0 +1,8 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MAIN.
+
+       PROCEDURE DIVISION.
+           CALL "UIAUTHREG"
+           STOP RUN.
+
+       END PROGRAM MAIN.

@@ -1,0 +1,63 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. DBREGISTER.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+01 WS-SQL        PIC X(240) VALUE SPACES.
+01 WS-FIRST      PIC X(300) VALUE SPACES.
+
+LINKAGE SECTION.
+01 L-USERNAME    PIC X(30).
+01 L-EMAIL       PIC X(60).
+01 L-PASSWORD    PIC X(6).
+01 L-RESULT      PIC X.
+01 L-MSG         PIC X(70).
+
+PROCEDURE DIVISION USING L-USERNAME L-EMAIL L-PASSWORD L-RESULT L-MSG.
+
+    MOVE "N" TO L-RESULT
+    MOVE SPACES TO L-MSG
+
+    IF L-USERNAME = SPACES OR L-EMAIL = SPACES OR L-PASSWORD = SPACES
+        MOVE "All fields are required." TO L-MSG
+        GOBACK
+    END-IF
+
+    *> Check email exists
+    STRING
+      "SELECT 1 FROM users WHERE email='" FUNCTION TRIM(L-EMAIL) "' LIMIT 1;"
+      INTO WS-SQL
+    END-STRING
+    CALL "DBEXEC" USING WS-SQL WS-FIRST
+    IF FUNCTION TRIM(WS-FIRST) = "1"
+        MOVE "Email already taken." TO L-MSG
+        GOBACK
+    END-IF
+
+    *> Check username exists
+    MOVE SPACES TO WS-SQL
+    STRING
+      "SELECT 1 FROM users WHERE username='" FUNCTION TRIM(L-USERNAME) "' LIMIT 1;"
+      INTO WS-SQL
+    END-STRING
+    CALL "DBEXEC" USING WS-SQL WS-FIRST
+    IF FUNCTION TRIM(WS-FIRST) = "1"
+        MOVE "Username already taken." TO L-MSG
+        GOBACK
+    END-IF
+
+    *> Insert user with bcrypt hash
+    MOVE SPACES TO WS-SQL
+    STRING
+      "INSERT INTO users(username,email,password_hash) VALUES ('"
+      FUNCTION TRIM(L-USERNAME) "','"
+      FUNCTION TRIM(L-EMAIL) "', crypt('"
+      FUNCTION TRIM(L-PASSWORD) "', gen_salt('bf')));"
+      INTO WS-SQL
+    END-STRING
+
+    CALL "DBEXEC" USING WS-SQL WS-FIRST
+
+    MOVE "Y" TO L-RESULT
+    MOVE "User created." TO L-MSG
+    GOBACK.

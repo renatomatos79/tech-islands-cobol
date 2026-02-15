@@ -1,0 +1,60 @@
+# -----------------------------------------------------------
+# Docker Compose file for:
+#   - A PostgreSQL database
+#   - A COBOL development/runtime container
+#
+# This allows you to run your whole COBOL + Postgres
+# environment with a single command:
+#
+#   docker compose up
+# -----------------------------------------------------------
+
+services:
+  # DATABASE SERVICE
+  postgres:
+    # Use official PostgreSQL image, version 16
+    image: postgres:16
+
+    # Friendly container name (easier to reference in logs/commands)
+    container_name: cobol-postgres
+
+    # Environment variables used by the Postgres image to
+    # automatically create the database on first startup
+    environment:
+      POSTGRES_USER: cobol        # database user
+      POSTGRES_PASSWORD: cobolpass # password for that user
+      POSTGRES_DB: coboldb        # database that will be created
+
+    # Expose Postgres port:
+    # 5432 on your machine -> 5432 inside the container
+    # Allows tools like DBeaver, pgAdmin, or psql to connect
+    ports:
+      - "5432:5432"
+
+    # Mount initialization SQL script:
+    # Anything in /docker-entrypoint-initdb.d
+    # will run automatically the FIRST time the container starts
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # ^ local file       ^ inside container        ^ read-only
+
+  # COBOL SERVICE
+  cobol:
+    # Build a custom image from ./cobol/Dockerfile
+    build: ./cobol
+
+    # Set working directory inside the container
+    working_dir: /work
+
+    # Mount your local cobol folder into the container
+    # So changes on your machine appear immediately inside Docker
+    volumes:
+      - ./cobol:/work
+
+    # Ensure Postgres starts first before COBOL container
+    depends_on:
+      - postgres
+
+    # Keep the container running interactively
+    # (useful for running bash, cobc, tests, etc.)
+    tty: true

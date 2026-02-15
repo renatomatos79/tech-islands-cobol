@@ -1,0 +1,7 @@
+services:
+  cobol:
+    build: ./cobol
+    working_dir: /work
+    volumes:
+      - ./cobol:/work
+    tty: true

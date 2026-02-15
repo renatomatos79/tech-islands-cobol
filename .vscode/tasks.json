@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "COBOL: Run",
+      "type": "shell",
+      "command": "docker compose run --rm cobol make run",
+      "problemMatcher": []
+    },
+    {
+      "label": "COBOL: Clean",
+      "type": "shell",
+      "command": "docker compose run --rm cobol make clean",
+      "problemMatcher": []
+    }
+  ]
+}

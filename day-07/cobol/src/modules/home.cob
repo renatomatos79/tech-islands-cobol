@@ -1,0 +1,91 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. HOME.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+COPY "src/copybooks/constants.cpy".
+COPY "src/copybooks/types.cpy".
+
+01 WS-DUMMY       PIC X VALUE SPACE.
+01 WS-BLANK-LINE  PIC X(70) VALUE SPACES.
+
+01 WS-HOME-OPT    PIC X VALUE SPACE.
+01 WS-IN-MENU     PIC X VALUE "N".
+
+SCREEN SECTION.
+
+01 HOME-SCREEN.
+   05 BLANK SCREEN.
+   05 LINE 1  COLUMN 2  VALUE "[M]enu  [E]xit".
+   05 LINE 3  COLUMN 30 VALUE "HOME".
+   05 LINE 6  COLUMN 2  VALUE "Select ==> ".
+   05 LINE 6  COLUMN 13 PIC X USING WS-HOME-OPT.
+
+01 MENU-SCREEN.
+   05 BLANK SCREEN.
+   05 LINE 1  COLUMN 2  VALUE "[B]ack  [E]xit".
+   05 LINE 3  COLUMN 30 VALUE "MENU".
+   05 LINE 6  COLUMN 2  VALUE "1 - Unit of measurement".
+   05 LINE 7  COLUMN 2  VALUE "2 - SKUs".
+   05 LINE 9  COLUMN 2  VALUE "Choose ==> ".
+   05 LINE 9  COLUMN 13 PIC X USING WS-HOME-OPT.
+
+PROCEDURE DIVISION.
+
+   PERFORM UNTIL APP-EXIT OR WS-IN-MENU = "Z"
+
+      MOVE SPACES TO WS-MSG
+      MOVE SPACE  TO WS-HOME-OPT
+
+      IF WS-IN-MENU = "Y"
+         ACCEPT MENU-SCREEN
+         PERFORM HANDLE-MENU
+      ELSE
+         ACCEPT HOME-SCREEN
+         PERFORM HANDLE-HOME
+      END-IF
+
+   END-PERFORM
+
+   GOBACK.
+
+
+HANDLE-HOME.
+   EVALUATE WS-HOME-OPT
+      WHEN "M" WHEN "m"
+         MOVE "Y" TO WS-IN-MENU
+      WHEN "E" WHEN "e"
+         MOVE "Y" TO WS-APP-EXIT
+      WHEN OTHER
+         MOVE "Invalid option. Use M or E." TO WS-MSG
+         PERFORM SHOW-MSG
+   END-EVALUATE
+   .
+
+
+HANDLE-MENU.
+   EVALUATE WS-HOME-OPT
+      WHEN "1"
+         MOVE "Unit of measurement (not implemented)." TO WS-MSG
+         PERFORM SHOW-MSG
+      WHEN "2"
+         MOVE "SKUs (not implemented)." TO WS-MSG
+         PERFORM SHOW-MSG
+      WHEN "B" WHEN "b"
+         MOVE "N" TO WS-IN-MENU
+      WHEN "E" WHEN "e"
+         MOVE "Y" TO WS-APP-EXIT
+      WHEN OTHER
+         MOVE "Invalid option. Use 1,2,B or E." TO WS-MSG
+         PERFORM SHOW-MSG
+   END-EVALUATE
+   .
+
+
+SHOW-MSG.
+   DISPLAY WS-BLANK-LINE AT LINE 22 COLUMN 2
+   DISPLAY WS-MSG        AT LINE 22 COLUMN 2
+   DISPLAY "Press ENTER to continue..." AT LINE 23 COLUMN 2
+   ACCEPT WS-DUMMY
+   MOVE SPACES TO WS-MSG
+   .
